@@ -1,0 +1,6 @@
+# This directory is for your knowledge base documents.
+#
+# Add your PDF, TXT, or other supported files here. The agent will use them
+# to answer questions. This directory is tracked by Git to ensure it exists,
+# but the documents you add should be managed by your own version control
+# policies (e.g., adding them to .gitignore if they are large or private). 

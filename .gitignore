@@ -21,7 +21,6 @@ wheels/
 *.log
 
 # Data, indexes, and assets
-documents/
 faiss_index/
 docs/
 
