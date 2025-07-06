@@ -1,0 +1,15 @@
+# Agent Configuration
+agent:
+  model_name: "gemma:2b"
+  embedding_model: "all-MiniLM-L6-v2"
+
+# Paths Configuration
+paths:
+  documents: "documents"
+  index: "faiss_index"
+  prompts: "prompts/customer_care.txt"
+
+# Text Splitter Configuration
+text_splitter:
+  chunk_size: 1000
+  chunk_overlap: 200 

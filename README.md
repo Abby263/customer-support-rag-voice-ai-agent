@@ -17,7 +17,7 @@ The agent follows a Retrieval-Augmented Generation (RAG) pattern:
 
 You can run the agent in two modes:
 
-1.  **Gradio UI (Default)**: Launches a web interface for interaction.
+1.  **Gradio UI (Default)**: Launches a web interface for interaction. A public link will be generated in your terminal.
     ```bash
     poetry run run-agent
     ```
@@ -36,11 +36,21 @@ If you need to rebuild the index from scratch (e.g., if the index is corrupted o
 poetry run run-agent --reindex
 ```
 
+## Configuration
+
+All agent settings are managed in the `config/config.yaml` file. You can customize the agent's behavior by modifying this file.
+
+-   **`agent`**: Configure the LLM and embedding models.
+-   **`paths`**: Define the paths for documents, the FAISS index, and prompts.
+-   **`text_splitter`**: Adjust the chunk size and overlap for document processing.
+
 ## Project Structure
 
 The project is organized as follows:
 
+-   `config/`: Contains the `config.yaml` file for all agent settings.
 -   `src/agent/`: Contains the core agent logic.
+    -   `config.py`: Loads and provides access to the configuration.
     -   `conversation_agent.py`: Defines the agent's graph and business logic.
     -   `main.py`: The entry point for running the agent.
     -   `vector_store.py`: Handles the creation and management of the FAISS index.
@@ -49,8 +59,12 @@ The project is organized as follows:
 -   `prompts/`: Contains the prompt templates.
 -   `pyproject.toml`: Defines the project dependencies and scripts.
 
-## Customizing the Knowledge Base
+## Customizing the Agent
 
-To add your own information for the agent to use, simply add your PDF files to the `documents/` directory. The agent will automatically process them and update its knowledge base the next time you run it.
+### Knowledge Base
 
-If the `documents/` directory is empty, the agent will still run but will operate in a conversational mode without a knowledge base. A warning will be logged to the console.
+To add your own information for the agent to use, simply add your PDF files to the directory specified in `paths.documents` in the `config/config.yaml` file. The agent will automatically process them and update its knowledge base the next time you run it.
+
+### Behavior and Models
+
+You can change the agent's behavior, LLM model, and embedding model by editing the `config/config.yaml` file. For example, to use a different Ollama model, simply update the `agent.model_name` field.

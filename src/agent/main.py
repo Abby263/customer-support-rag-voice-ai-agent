@@ -6,10 +6,10 @@ from fastrtc import ReplyOnPause, Stream, get_stt_model, get_tts_model
 from loguru import logger
 
 from .conversation_agent import create_agent
+from .config import DOCUMENTS_PATH  # Import the configured documents path
 
 # Define the project root directory
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-DOCUMENTS_PATH = PROJECT_ROOT / "documents"
 
 def start():
     parser = argparse.ArgumentParser(description="Customer Care Voice Agent")
@@ -37,13 +37,15 @@ def start():
     # Initialize models and agent
     stt_model = get_stt_model()  # moonshine/base
     tts_model = get_tts_model()  # kokoro
-    customer_care_agent = create_agent(
-        documents_path=DOCUMENTS_PATH, reindex=args.reindex
-    )
+    customer_care_agent = create_agent(reindex=args.reindex)
 
     def run_agent(audio):
         transcript = stt_model.stt(audio)
         logger.debug(f"🎤 Transcript: {transcript}")
+
+        # Do not process empty transcripts
+        if not transcript or not transcript.strip():
+            return
 
         # Invoke the agent graph
         result = customer_care_agent.invoke({"question": transcript})
@@ -62,7 +64,7 @@ def start():
         stream.fastphone()
     else:
         logger.info("Launching with Gradio UI...")
-        stream.ui.launch()
+        stream.ui.launch(share=True)
 
 if __name__ == "__main__":
     start() 

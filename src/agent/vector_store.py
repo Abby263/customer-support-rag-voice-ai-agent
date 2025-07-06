@@ -6,7 +6,7 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain_community.vectorstores import FAISS
 from loguru import logger
 
-INDEX_PATH = "faiss_index"
+from .config import INDEX_PATH
 
 
 def get_vector_store(embeddings, text_splitter, documents_path, force_reindex=False):
@@ -22,17 +22,18 @@ def get_vector_store(embeddings, text_splitter, documents_path, force_reindex=Fa
     Returns:
         A FAISS vector store instance.
     """
-    if force_reindex and os.path.exists(INDEX_PATH):
-        logger.info(f"Force re-index requested. Deleting old index at '{INDEX_PATH}'...")
-        shutil.rmtree(INDEX_PATH)
+    index_path_str = str(INDEX_PATH)
+    if force_reindex and os.path.exists(index_path_str):
+        logger.info(f"Force re-index requested. Deleting old index at '{index_path_str}'...")
+        shutil.rmtree(index_path_str)
 
-    if os.path.exists(INDEX_PATH):
-        logger.info(f"Loading existing FAISS index from '{INDEX_PATH}'...")
-        vector_store = FAISS.load_local(INDEX_PATH, embeddings, allow_dangerous_deserialization=True)
+    if os.path.exists(index_path_str):
+        logger.info(f"Loading existing FAISS index from '{index_path_str}'...")
+        vector_store = FAISS.load_local(index_path_str, embeddings, allow_dangerous_deserialization=True)
         logger.info("FAISS index loaded successfully.")
         logger.info("--- Vector DB Status ---")
         logger.info(f"  Vectors Loaded: {vector_store.index.ntotal}")
-        logger.info(f"  Source: '{INDEX_PATH}'")
+        logger.info(f"  Source: '{index_path_str}'")
         logger.info("------------------------")
     else:
         logger.info(
@@ -63,14 +64,14 @@ def get_vector_store(embeddings, text_splitter, documents_path, force_reindex=Fa
         vector_store = FAISS.from_documents(split_docs, embeddings)
         logger.info("Vector store created successfully.")
 
-        logger.info(f"Saving new FAISS index to '{INDEX_PATH}'.")
-        vector_store.save_local(INDEX_PATH)
+        logger.info(f"Saving new FAISS index to '{index_path_str}'.")
+        vector_store.save_local(index_path_str)
         logger.info("Index saved successfully.")
 
         logger.info("--- Vector DB Indexing Complete ---")
         logger.info(f"  Documents Loaded: {len(docs)}")
         logger.info(f"  Content Chunks Created: {len(split_docs)}")
-        logger.info(f"  Index saved to: '{INDEX_PATH}'")
+        logger.info(f"  Index saved to: '{index_path_str}'")
         logger.info("-----------------------------------")
 
     return vector_store
@@ -81,11 +82,10 @@ def update_vector_store(vector_store, embeddings, text_splitter, documents_path)
     Updates an existing FAISS vector store with new or modified documents.
     """
     logger.info("Checking for new documents to update the index...")
-    index_path = Path(INDEX_PATH)
     doc_path = Path(documents_path)
     
     # Get modification time of the index
-    index_mtime = index_path.stat().st_mtime if index_path.exists() else 0
+    index_mtime = INDEX_PATH.stat().st_mtime if INDEX_PATH.exists() else 0
 
     # Find new or updated documents
     updated_files = [
@@ -116,7 +116,7 @@ def update_vector_store(vector_store, embeddings, text_splitter, documents_path)
     vector_store.add_documents(split_docs)
     
     logger.info("Saving updated FAISS index...")
-    vector_store.save_local(INDEX_PATH)
+    vector_store.save_local(str(INDEX_PATH))
     logger.info("Index updated and saved successfully.")
     
     return vector_store 
