@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.gradio/
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+
+# IDE configuration files
+.idea/
+.vscode/
+
+# Log files
+*.log
+
+# Data, indexes, and assets
+documents/
+faiss_index/
+docs/
+
+# macOS specific
+.DS_Store
+
+# Configuration
+config/env.yaml

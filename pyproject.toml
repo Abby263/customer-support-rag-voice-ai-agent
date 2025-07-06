@@ -1,0 +1,28 @@
+[project]
+name = "customer-support-rag-voice-ai-agent"
+version = "0.1.0"
+description = "A RAG-based, voice-enabled AI agent for customer support."
+readme = "README.md"
+requires-python = "~3.12"
+dependencies = [
+    "fastrtc[stt]>=0.0.19",
+    "kokoro-onnx>=0.4.7",
+    "loguru>=0.7.3",
+    "ollama>=0.4.7",
+    "langgraph>=0.1.5",
+    "langchain>=0.2.11",
+    "langchain-community>=0.2.11",
+    "faiss-cpu>=1.8.0",
+    "pypdf>=4.0.0",
+    "unstructured[pdf]>=0.14.0",
+    "sentence-transformers>=3.0.0",
+]
+
+[project.scripts]
+run-agent = "src.agent.main:start"
+
+[tool.poetry]
+packages = [{include = "agent", from = "src"}]
+
+[tool.poetry.scripts]
+run-agent = "src.agent.main:start"
